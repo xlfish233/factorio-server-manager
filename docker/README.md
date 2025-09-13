@@ -10,7 +10,7 @@ Copy `docker-compose.yaml` and `.env` files from this repository to somewhere on
 
 Edit values in the `.env` file:
 * `RCON_PASS` (default empty string): Password for Factorio RCON (FSM uses it to communicate with the Factorio server). \
-  If left empty, a random password will be generated and saved on the first start of the server. You can see the password in `fsm-data/conf.json` file.
+  If left empty, a random password will be generated and saved on the first start of the server. You can see the password in `fsm-data/conf.toml` file.
 * `DOMAIN_NAME` (must be set manually): The domain name where your FSM UI will be available. Must be set,
   so [Let's Encrypt](https://letsencrypt.org/) service can issue a valid HTTPS certificate for this domain.
 * `EMAIL_ADDRESS` (must be set manually): Your email address. Used only by Let's Encrypt service.
@@ -79,17 +79,14 @@ After container starts, latest Factorio version will be downloaded and installed
 Authentication is supported in the application, but it is recommended to ensure access to the Factorio manager UI is accessible via VPN or internal network.
 
 ## Development
-For development purposes it also has the ability to create the docker image from local sourcecode. This is done by running `build.sh` in the `docker` directory. This will delete all old executables and the node_modules directory (runs `make build`). The created docker image will have the tag `factorio-server-manager:dev`.
+For development purposes it also has the ability to create the docker image from local source code. This is done by running `build.sh` in the `docker` directory. The created docker image will have the tag `fsmr:dev`.
 
 ### Creating release bundles
-A Dockerfile-build file is included for creating the release bundles. Use Docker version 20 in order to use the BUILDKIT environment, some issues have been encountered with Docker version 19.
-
-To create the bundle build the Dockerfile-build file with the following command. The release bundles are output to the ./dist directory.
-
-Run this command from the root factorio-server-manager directory.
+Use the Makefile to build release zips for Linux and Windows (cross target):
 ```
-DOCKER_BUILDKIT=1 docker build --no-cache -f docker/Dockerfile-build -t ofsm-build --target=build -o dist .
+make gen_release
 ```
+Artifacts will be in the `build/` directory.
 
 ## For everyone who actually read this thing to the end
 

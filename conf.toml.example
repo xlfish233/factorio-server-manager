@@ -1,0 +1,52 @@
+# Example configuration for factorio-server-manager-rs
+
+# Address/port to bind HTTP server
+bind_addr = "127.0.0.1:3000"
+
+# SeaORM/SQLx database URL (SQLite by default)
+database_url = "sqlite://dev.db?mode=rwc"
+
+# Mark cookies as Secure (HTTPS-only). Set to false for local dev without TLS.
+# Production: set to true (HTTPS); for local HTTP testing set false
+secure = true
+
+# Base64-encoded cookie key. 64 bytes recommended; shorter keys are derived to 64 bytes.
+# REQUIRED in production (persist across restarts).
+# Generate example (Linux): head -c 64 /dev/urandom | base64
+# cookie_key_b64 = ""
+
+# When unauthorized and a browser requests HTML, redirect (303) to /login.
+redirect_on_unauth = true
+
+# Factorio related paths
+factorio_dir = "./"
+saves_dir = "./saves"
+mods_dir = "./mods"
+mod_pack_dir = "./mod_packs"
+config_file = "config/config.ini"
+log_file = "factorio-current.log"
+settings_file = "server-settings.json"
+admin_file = "server-adminlist.json"
+
+# Factorio binary and directories
+factorio_binary = "bin/x64/factorio"
+factorio_config_dir = "config"
+factorio_base_mod_dir = "data/base"
+
+# RCON settings
+factorio_rcon_port = 0
+# Strong random password REQUIRED in production
+factorio_rcon_pass = ""
+
+# Log files
+console_log_file = "factorio-current.log"
+chat_log_file = ""
+
+# Cached console lines for WS replay
+console_cache_size = 25
+
+# Max upload body size in bytes (default 20MB)
+max_upload_bytes = 20971520
+
+# Autostart Factorio on service boot (default false)
+autostart = false

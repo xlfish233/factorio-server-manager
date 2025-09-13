@@ -1,12 +1,16 @@
 version: "3"
 services:
   factorio-server-manager:
-    image: "ofsm/ofsm:latest"
-    container_name: "factorio-server-manager"
-    restart: "unless-stopped"
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: fsmr:dev
+    container_name: factorio-server-manager
+    restart: unless-stopped
     environment:
-      - "FACTORIO_VERSION=stable"
-      - "RCON_PASS"
+      - FACTORIO_VERSION=stable
+      #- FSMR_BIND_ADDR=0.0.0.0:80
+      #- FSMR_SECURE=false
     ports:
       - "80:80"
       - "34197:34197/udp"

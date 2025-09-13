@@ -1,0 +1,38 @@
+[package]
+name = "factorio-server-manager-rs"
+version = "0.1.0"
+edition = "2021"
+description = "Rust rewrite scaffold for Factorio Server Manager"
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "process", "io-util"] }
+axum = { version = "0.8", features = ["multipart", "ws"] }
+sea-orm = { version = "0.12", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros"] }
+snafu = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+axum-extra = { version = "0.10", features = ["cookie", "cookie-signed"] }
+dashmap = "5"
+rand = "0.8"
+bcrypt = "0.15"
+base64 = "0.22"
+uuid = { version = "1", features = ["v4"] }
+cookie = "0.18"
+figment = { version = "0.10", features = ["toml", "env"] }
+toml = "0.8"
+async-trait = "0.1"
+ini = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+futures-util = "0.3"
+nix = { version = "0.28", features = ["signal"] }
+regex = "1"
+rcon = { version = "0.6", features = ["rt-tokio"] }
+tower-http = { version = "0.5", features = ["fs", "trace", "limit"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+zip = { version = "0.6", default-features = false, features = ["deflate"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "http2"] }
+urlencoding = "2"
+tokio-util = { version = "0.7", features = ["io"] }
+fs2 = "0.4"
+sha2 = "0.10.9"

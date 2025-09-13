@@ -1,0 +1,11 @@
+target/
+.git/
+node_modules/
+screenshots/
+dev.db
+*.db
+docker/factorio-server-manager-linux.zip
+docker/factorio-server-manager-windows.zip
+*.log
+factorio/
+saves/

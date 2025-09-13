@@ -1,52 +1,52 @@
-[![.github/workflows/test-workflow.yml](https://github.com/OpenFactorioServerManager/factorio-server-manager/workflows/.github/workflows/test-workflow.yml/badge.svg)](https://github.com/OpenFactorioServerManager/factorio-server-manager/actions)
-[![Discord](https://img.shields.io/discord/779512040934342687?label=Discord)](https://discord.gg/SB647WmSbU)
+![Discord](https://img.shields.io/discord/779512040934342687?label=Discord)
 
-# Factorio Server Manager
+# Factorio Server Manager – Rust Rewrite
 
-### A tool for managing Factorio servers.
-This tool runs on a Factorio server and allows management of the Factorio server, saves, mods and many other features.
+This repository now ships a Rust backend (Axum + SeaORM) that replaces the original Go implementation. The frontend under `ui/` remains the same; static assets are served from `app/`. HTTP and WebSocket APIs aim to be compatible with the original so the existing UI works without changes.
 
-## Features
-* Allows control of the Factorio Server, starting and stopping the Factorio binary.
-* Allows the management of save files, upload, download and delete saves.
-* Manage installed mods, upload new ones and more
-* Manage modpacks, so it is easier to play with different configurations
-* Allow viewing of the server logs and current configuration.
-* Authentication for protecting against unauthorized users
-* Available as a Docker container
+Credits
+- Based on and inspired by OpenFactorioServerManager/factorio-server-manager (MIT): https://github.com/OpenFactorioServerManager/factorio-server-manager
+- Thanks to the original authors and maintainers: Mitch Roote, knoxfighter, Jannaahs, and all contributors
 
-#### Manage Factorio Server
-![Factorio Server Manager Screenshot](screenshots/Screenshot_Controls.png)
+Project Status
+- The Go backend (old `src/`) has been removed. The Rust backend is at the repository root (`Cargo.toml` in root).
+- Static assets live in `app/`, frontend sources in `ui/`.
+- Configuration is `conf.toml` (see `conf.toml.example`).
 
-#### Manage save files
-![Factorio Server Manager Screenshot](screenshots/Screenshot_Saves.png)
+Features
+- API parity with the Go version (REST + WS; compatible with `ui/`)
+- Auto-detects `factorio_dir`; generates and persists cookie key, RCON password and port on first run
+- Streaming uploads/downloads for saves/mods/mod packs to reduce memory usage
+- Mods directory concurrency protection: in‑process RwLock + cross‑process lockfile (`.fsm_mods.lock`)
+- WebSocket broadcasting of `server_status` and `gamelog` with snapshot replay on connect
+- Convenience: hides `*.tmp.zip`; only passes `--server-adminlist` on Factorio ≥ 0.17
 
-#### Manage mods
-![Factorio Server Manager Screenshot](screenshots/Screenshot_Mods.png)
+Quick Start (Local HTTP)
+1) Extract the official headless server under the repo root at `./factorio` (must include `bin/x64/factorio`, `data/base`, `config`).
+2) From repo root run:
+   - `FSMR_SECURE=false RUST_LOG=info cargo run`
+3) On first start it will:
+   - Detect `factorio_dir` and persist `cookie_key_b64`, `factorio_rcon_pass`, `factorio_rcon_port` into `conf.toml`
+   - Initialize the database and create a default `admin` (a random password is printed to the console)
+4) Open `http://127.0.0.1:3000/login` and log in with `admin + printed password`
 
-## [Installation and Usage](https://github.com/OpenFactorioServerManager/factorio-server-manager/wiki/Installation-and-Usage)
+Docker
+- Quick start from `docker/`:
+  - `docker compose -f docker/docker-compose.simple.yaml up -d`
+- The container will download Factorio headless on first run. Data/config are persisted under `./docker/fsm-data` and `./docker/factorio-data/*` by default.
 
-## [Development](https://github.com/OpenFactorioServerManager/factorio-server-manager/wiki/Development)
+Configuration
+- Main file: `conf.toml` (example: `conf.toml.example`).
+- Environment overrides use the `FSMR_` prefix (e.g. `FSMR_CONF`, `FSMR_BIND_ADDR`, `FSMR_SECURE=false`).
+- First run persists generated values (cookie key, RCON password/port) back to `conf.toml`.
 
-## Contributing
-1. Fork it!
-2. Checkout the develop branch, only use that as a base: `git checkout develop`
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Add your changes a in human readable way into CHANGELOG.md
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request, with `develop` as base :D
+Development
+- Build: `cargo build`
+- Run with verbose logs: `RUST_LOG=debug,tower_http=debug,axum=debug cargo run`
+- Frontend bundle: `npm install && npm run build` or `make app/bundle` (outputs to `app/`).
 
-## Authors
+License
+- MIT — see `LICENSE.md`. Huge thanks to the original project and all contributors.
 
-* **Mitch Roote** - [roote.ca](https://roote.ca)
-* **[knoxfighter](https://github.com/knoxfighter)**
-* **[Jannaahs](https://github.com/jannaahs)**
-
-## Special Thanks
-- **[All Contributions](https://github.com/OpenFactorioServerManager/factorio-server-manager/graphs/contributors)**
-- **mickael9** for reverseengineering the factorio-save-file: https://forums.factorio.com/viewtopic.php?f=5&t=8568#
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+Other Languages
+- 中文说明请见 `README_ZH.MD`.

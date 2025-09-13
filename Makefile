@@ -1,8 +1,7 @@
-# Build tool for Factorio Server Manager
+# Build tool for Factorio Server Manager (Rust backend)
 
 NODE_ENV:=production
 
-#TODO add support for a mac build maybe?
 UNAME := $(shell uname)
 ifeq ($(UNAME), Linux)
 	release := build/factorio-server-manager-linux.zip
@@ -10,13 +9,19 @@ else
 	release := build/factorio-server-manager-windows.zip
 endif
 
+.PHONY: build clean app/bundle backend-linux backend-windows gen_release
+
 build: $(release)
 
-build/factorio-server-manager-%.zip: clean app/bundle factorio-server-manager-%
+# Package artifacts with static app and example config
+build/factorio-server-manager-%.zip: clean app/bundle backend-%
 	@mkdir -p build/
 	@echo "Packaging Build - $@"
+	@mkdir -p factorio-server-manager
 	@cp -r app/ factorio-server-manager/
-	@cp conf.json.example factorio-server-manager/conf.json
+	@cp conf.toml.example factorio-server-manager/conf.toml
+	@cp target/release/factorio-server-manager-rs factorio-server-manager/factorio-server-manager 2>/dev/null || true
+	@cp target/x86_64-pc-windows-gnu/release/factorio-server-manager-rs.exe factorio-server-manager/factorio-server-manager.exe 2>/dev/null || true
 	@zip -r $@ factorio-server-manager > /dev/null
 	@rm -r factorio-server-manager/
 
@@ -24,17 +29,14 @@ app/bundle:
 	@echo "Building Frontend"
 	@npm install && npm run build
 
-factorio-server-manager-linux:
-	@echo "Building Backend - Linux"
-	@mkdir -p factorio-server-manager
-	@cd src; \
-	CGO_ENABLED=0 GO111MODULE=on GOOS=linux GOARCH=amd64 go build -o ../factorio-server-manager/factorio-server-manager .
+backend-linux:
+	@echo "Building Backend - Linux (cargo)"
+	@cargo build --release
 
-factorio-server-manager-windows:
-	@echo "Building Backend - Windows"
-	@mkdir -p factorio-server-manager
-	@cd src; \
-	GO111MODULE=on GOOS=windows GOARCH=amd64 CGO_ENABLED=0 CXX=x86_64-w64-mingw32-g++ CC=x86_64-w64-mingw32-gcc go build -ldflags="-extldflags=-static" -o ../factorio-server-manager/factorio-server-manager.exe .
+backend-windows:
+	@echo "Building Backend - Windows (cargo cross target)"
+	@rustup target add x86_64-pc-windows-gnu || true
+	@cargo build --release --target x86_64-pc-windows-gnu
 
 gen_release: build/factorio-server-manager-linux.zip build/factorio-server-manager-windows.zip
 	@echo "Done"
@@ -50,4 +52,3 @@ clean:
 	@-rm -r app/images/vendor/
 	@-rm -rf node_modules/
 	@-rm -r pkg/
-	@-rm -r factorio-server-manager
