@@ -37,8 +37,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Cargo build and test
         run: |
-          cargo build --locked
-          cargo test --all --locked
+          cargo build
+          cargo test --all
   docker-push:
     needs:  [test-npm, test-rust]
     runs-on: ubuntu-latest
