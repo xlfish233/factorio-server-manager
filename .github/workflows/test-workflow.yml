@@ -8,6 +8,10 @@ on:
     branches:
       - '**'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 env:
   factorio_password: ${{ secrets.FACTORIO_PASSWORD }}
   factorio_username: ${{ secrets.FACTORIO_USERNAME }}
@@ -47,15 +51,16 @@ jobs:
       - uses: actions/checkout@v3
       - uses: rlespinasse/github-slug-action@v3.x
       - uses: docker/setup-buildx-action@v3
-      - name: Login to dockerhub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - id: docker_build
         uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/Dockerfile
           push: true
-          tags: ofsm/ofsm:${{ env.GITHUB_REF_SLUG }}
+          tags: ghcr.io/${{ env.GITHUB_REPOSITORY_SLUG }}:${{ env.GITHUB_REF_SLUG }}
