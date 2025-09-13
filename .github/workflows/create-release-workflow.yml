@@ -1,6 +1,12 @@
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*'
+      - 'v*.*'
+      - 'v*.*.*'
+  workflow_dispatch:
 jobs:
   add-assets-to-release:
     runs-on: ubuntu-latest

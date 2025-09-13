@@ -2,11 +2,12 @@ on:
   push:
     branches:
       - '**'
-    tags-ignore:
-      - '*.*'
+    tags:
+      - '**'
   pull_request:
     branches:
       - '**'
+  workflow_dispatch:
 env:
   factorio_password: ${{ secrets.FACTORIO_PASSWORD }}
   factorio_username: ${{ secrets.FACTORIO_USERNAME }}
@@ -20,8 +21,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
       - run: make app/bundle
   test-rust:
     strategy:
