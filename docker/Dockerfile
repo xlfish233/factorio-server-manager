@@ -30,7 +30,7 @@ WORKDIR /opt/fsm
 COPY --from=builder /workspace/target/release/factorio-server-manager-rs /opt/fsm/factorio-server-manager-rs
 COPY --from=builder /workspace/app/ /opt/fsm/app/
 COPY --from=builder /workspace/conf.toml.example /opt/fsm/conf.toml.example
-COPY ./entrypoint.sh /opt/entrypoint.sh
+COPY docker/entrypoint.sh /opt/entrypoint.sh
 
 RUN chmod +x /opt/entrypoint.sh
 

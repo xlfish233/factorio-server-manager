@@ -76,4 +76,4 @@ jobs:
           context: .
           file: docker/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.GITHUB_REPOSITORY_SLUG }}:latest,ghcr.io/${{ env.GITHUB_REPOSITORY_SLUG }}:${{ steps.tag_name.outputs.tag }}
+          tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ steps.tag_name.outputs.tag }}

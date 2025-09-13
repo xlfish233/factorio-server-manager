@@ -63,4 +63,4 @@ jobs:
           context: .
           file: docker/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.GITHUB_REPOSITORY_SLUG }}:${{ env.GITHUB_REF_SLUG }}
+          tags: ghcr.io/${{ github.repository }}:${{ env.GITHUB_REF_SLUG }}
